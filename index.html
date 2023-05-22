@@ -5,42 +5,39 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NBA Song of The Year</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
     />
+
     <link rel="stylesheet" href="./assets/css/style.css" />
     <link rel="icon" href="./assets/images/header.png" />
   </head>
-  <body class="hero is-full-height">
-    <section
-      class="hero-body is-flex is-justify-content-center has-background-danger"
-    >
-      <div
-        class="append-me has-text-centered is-flex is-flex-direction-column is-align-content-center is-justify-content-center"
-      >
-        <h1 class="title is-1">Enter an NBA player's name</h1>
+  <body class="">
+    <div class="nba-text-wrapper">
+      <h1 class="nba__header">Enter an NBA player's name</h1>
+      <div class="form-wrapper">
         <input
           id="player-input"
           type="text"
           placeholder="Lebron James"
-          class="input is-medium mb-2"
+          class="input"
         />
-        <button id="submit-button" class="button is-link is-medium">
-          Submit
-        </button>
+        <button id="submit-button" class="btn btn--primary pill">Submit</button>
       </div>
-    </section>
-    <section class="section-container p-0 hero hidden">
+    </div>
+    <section class="section-container stats-youtube-wrapper hidden">
       <div
         class="has-text-centered is-flex is-justify-content-center has-background-link column"
       >
         <div class="has-text-light">
-          <h2 id="player-name" class="title is-2 has-text-light"></h2>
+          <h2 id="player-name" class="nba__name"></h2>
           <div class="stats-container">
-            <h4 class="title is-4 has-text-light mb-1" id="draft-year"></h4>
-            <h4 class="title is-4 has-text-light mb-1" id="jersey"></h4>
-            <h4 class="title is-4 has-text-light mb-1" id="team"></h4>
+            <h3 class="nba__stat" id="draft-year"></h3>
+            <h3 class="nba__stat" id="jersey"></h3>
+            <h3 class="nba__stat" id="team"></h3>
           </div>
         </div>
       </div>
@@ -51,8 +48,8 @@
           <h2 id="song" class="title is-2 mb-1"></h2>
           <iframe
             class="video-iframe"
-            width="854"
-            height="480"
+            width="544"
+            height="366"
             frameborder="0"
             allowfullscreen
           ></iframe>
@@ -64,11 +61,12 @@
     <div class="modal">
       <div class="modal-background"></div>
       <div class="modal-content">
-        <h2 class="title alert-title">Please enter a valid name!</h2>
-        <!-- Any other Bulma elements you want -->
+        <!-- <h2 class="title alert-title">Please enter a valid name!</h2> -->
       </div>
       <button class="modal-close is-large" aria-label="close"></button>
     </div>
+    <div class="append-me"></div>
+
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
       integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="

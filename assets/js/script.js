@@ -1,207 +1,202 @@
-const playerSearchBtn = document.querySelector("#submit-button")
-const playerInputEl = document.querySelector("#player-input")
-const draftYearEl = document.querySelector("#draft-year")
-const jerseyEl = document.querySelector("#jersey")
-const teamEl = document.querySelector("#team")
-const anchorEl = document.querySelector(".stats")
-const playerNameEl = document.querySelector("#player-name")
-const sectionContainerEl = document.querySelector(".section-container")
-const modalEl = document.querySelector(".modal")
-const modalContainerEl = document.querySelector(".modal-container")
-let modalCloseEl = document.querySelector(".modal-close")
-let appendMeContainerEl = document.querySelector(".append-me")
+const playerSearchBtn = document.querySelector("#submit-button");
+const playerInputEl = document.querySelector("#player-input");
+const draftYearEl = document.querySelector("#draft-year");
+const jerseyEl = document.querySelector("#jersey");
+const teamEl = document.querySelector("#team");
+const anchorEl = document.querySelector(".stats");
+const playerNameEl = document.querySelector("#player-name");
+const sectionContainerEl = document.querySelector(".section-container");
+const modalEl = document.querySelector(".modal");
+const modalContainerEl = document.querySelector(".modal-container");
+const nbaTextWrapper = document.querySelector(".nba-text-wrapper");
+let modalCloseEl = document.querySelector(".modal-close");
+let appendMeContainerEl = document.querySelector(".append-me");
 
-
-       
 const options = {
-    method: 'GET',
-    headers: {
-        'X-RapidAPI-Host': 'api-nba-v1.p.rapidapi.com',
-        'X-RapidAPI-Key': '02aa8ccc36msh7aa387c3b284e1fp1af881jsn3ac93989983c'
-    }
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Host": "api-nba-v1.p.rapidapi.com",
+    "X-RapidAPI-Key": "02aa8ccc36msh7aa387c3b284e1fp1af881jsn3ac93989983c",
+  },
 };
 
-playerSearchBtn.addEventListener("click", function(){
-    // console.dir(playerInputEl)
-    
-    let playerName = playerInputEl.value
+playerSearchBtn.addEventListener("click", function () {
+  // console.dir(playerInputEl)
+  nbaTextWrapper.classList.add("hidden");
+  let playerName = playerInputEl.value;
 
-    if(playerName === "" || playerName === " " || playerName === null) {
-        modalEl.classList.add("is-active")
-        
-    }
-    else {
-        // anchorEl.setAttribute("href", "./stats.html" + playerName)
-        getPlayerID(playerName)
-        savedSearches(playerName)
-    }
-    
-})
-
-
+  if (playerName === "" || playerName === " " || playerName === null) {
+    modalEl.classList.add("is-active");
+  } else {
+    // anchorEl.setAttribute("href", "./stats.html" + playerName)
+    getPlayerID(playerName);
+    savedSearches(playerName);
+  }
+});
 
 var getPlayerID = function (player) {
-    fetch(`https://www.balldontlie.io/api/v1/players?search=${player}`).then(function(response) {
-        // debugger;
-        if(response.ok) {
-            response.json().then(function(data){
-                console.log(data)
+  fetch(`https://www.balldontlie.io/api/v1/players?search=${player}`).then(
+    function (response) {
+      // debugger;
+      if (response.ok) {
+        response.json().then(function (data) {
+          console.log(data);
 
-                    // Remove class hidden from the container
-                    sectionContainerEl.classList.remove("hidden")
+          // Remove class hidden from the container
+          sectionContainerEl.classList.remove("hidden");
 
+          if (data.data.length > 0) {
+            playerFirstName = data.data[0].first_name;
+            playerLastName = data.data[0].last_name;
+            playerNameEl.innerHTML = playerFirstName + " " + playerLastName;
 
-                if(data.data.length > 0) {
+            console.log(playerLastName);
+            console.log(playerFirstName);
+            // playerID = data.data[0].id
+            // console.log(playerID)
+            team = data.data[0].team.full_name;
+            console.log(team);
+            teamEl.innerHTML = "Team: " + team;
 
-                    playerFirstName = data.data[0].first_name
-                    playerLastName = data.data[0].last_name
-                    playerNameEl.innerHTML = playerFirstName + " " + playerLastName
+            getPlayerDraftYear(playerLastName, playerFirstName);
+          } else {
+            // PUT MODAL HERE
+            modalEl.classList.add("is-active");
+          }
+        });
+      }
+    }
+  );
+};
 
-                    console.log(playerLastName)
-                    console.log(playerFirstName)
-                    // playerID = data.data[0].id 
-                    // console.log(playerID)
-                    team = data.data[0].team.full_name
-                    console.log(team)
-                    teamEl.innerHTML= "Team: " + team
-                    
-                    getPlayerDraftYear(playerLastName, playerFirstName)
-                }
-                else {
-                    // PUT MODAL HERE
-                    modalEl.classList.add("is-active")
-                }
-            })
+var getPlayerDraftYear = function (player, firstname) {
+  fetch(
+    `https://api-nba-v1.p.rapidapi.com/players?name=${player}`,
+    options
+  ).then(function (response) {
+    response.json().then(function (data) {
+      for (let i = 0; i < data.response.length; i++) {
+        if (data.response[i].firstname == firstname) {
+          playerDraftYear = data.response[i].nba.start;
+          playerJerseyNumber = data.response[i].leagues.standard.jersey;
+          console.log(playerDraftYear);
+          console.log(playerJerseyNumber);
+          jerseyEl.innerHTML = "Jersey #: " + playerJerseyNumber;
+          draftYearEl.innerHTML = "Draft Year: " + playerDraftYear;
+
+          // Run YouTube function
+          fetchTheApi(playerDraftYear);
         }
-        
-    })
-    
-}
-    
+      }
 
-var getPlayerDraftYear = function(player, firstname) {
-fetch(`https://api-nba-v1.p.rapidapi.com/players?name=${player}`, options)
-    .then(function(response){
-        response.json().then(function(data){
-            for (let i = 0; i < data.response.length; i++){
-                if (data.response[i].firstname == firstname) {
-                    playerDraftYear = data.response[i].nba.start
-                    playerJerseyNumber = data.response[i].leagues.standard.jersey
-                    console.log(playerDraftYear)
-                    console.log(playerJerseyNumber)
-                    jerseyEl.innerHTML= "Jersey #: " + playerJerseyNumber
-                    draftYearEl.innerHTML = "Draft Year: " + playerDraftYear
-
-                    // Run YouTube function
-                    fetchTheApi(playerDraftYear)
-
-                }
-            }
-            
-            // playerName = data.response[0].firstname + " " + data.response[0].lastname
-            // console.log(playerName)
-            // playerDraftYear = data.response[0].nba.start
-            // console.log(playerDraftYear)
-            // playerJerseyNumber = data.response[0].leagues.standard.jersey
-            // console.log(playerJerseyNumber)
-        })
-    })
-
-}
+      // playerName = data.response[0].firstname + " " + data.response[0].lastname
+      // console.log(playerName)
+      // playerDraftYear = data.response[0].nba.start
+      // console.log(playerDraftYear)
+      // playerJerseyNumber = data.response[0].leagues.standard.jersey
+      // console.log(playerJerseyNumber)
+    });
+  });
+};
 
 // getPlayerDraftYear()
 
-
 // YouTube API begin
 
-const videoIframe = document.querySelector(".video-iframe")
-const youtubeVideoTitle = document.querySelector("#song")
-const videoContainer = document.querySelector(".video-container")
+const videoIframe = document.querySelector(".video-iframe");
+const youtubeVideoTitle = document.querySelector("#song");
+const videoContainer = document.querySelector(".video-container");
 
+let fetchTheApi = function (userYear) {
+  let apiUrl =
+    "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=most popular songs of" +
+    userYear +
+    "&key=AIzaSyDlhGHiQ4BazcwFF_5FyT8TAp5fA9t78RE";
 
-
-let fetchTheApi = function(userYear) {
-    let apiUrl = 'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=most popular songs of' + userYear + '&key=AIzaSyDlhGHiQ4BazcwFF_5FyT8TAp5fA9t78RE'
-
-    fetch(apiUrl).then(function(response) {
-        if(response.ok) {
-            response.json().then(function(data) {
-                console.log(data)
-                // Run the YouTube embed function with the data as an argument
-                createYouTubeContent(data)
-            })
-        }
-        
-    })
-}
-
-let createYouTubeContent = function(yaya) {
-
-    for (let i = 0; i < yaya.items.length; i++) {
-        // Create title for the container
-        youtubeVideoTitle.innerHTML = yaya.items[i].snippet.title
-        // Append Title to container
-        videoContainer.appendChild(youtubeVideoTitle)
-
-        // Give the iframe a correct link
-        videoIframe.setAttribute("src", 'https://www.youtube.com/embed/' + yaya.items[i].id.videoId)
-        // Append iframe to the container
-        videoContainer.appendChild(videoIframe)
+  fetch(apiUrl).then(function (response) {
+    if (response.ok) {
+      response.json().then(function (data) {
+        console.log(data);
+        // Run the YouTube embed function with the data as an argument
+        createYouTubeContent(data);
+      });
     }
-}
+  });
+};
 
-let playersInLocalStorage = JSON.parse(localStorage.getItem('player')) || []
-console.log(playersInLocalStorage)
+let createYouTubeContent = function (yaya) {
+  for (let i = 0; i < yaya.items.length; i++) {
+    // Create title for the container
+    youtubeVideoTitle.innerHTML = yaya.items[i].snippet.title;
+    // Append Title to container
+    videoContainer.appendChild(youtubeVideoTitle);
 
-let savedSearches = function(player) {
-        let previousSearchButton = document.createElement("button")
-        previousSearchButton.classList.add("saved-search", "is-success", "button", "mr-2", "mt-2")
-        previousSearchButton.textContent = player
-    
-        playersInLocalStorage.push(player)
-        localStorage.setItem("player", JSON.stringify(playersInLocalStorage));
-        appendMeContainerEl.appendChild(previousSearchButton)
-    
-        $(".saved-search").on("click", function() {
-            let selectedPreviousSearch = $(this).text().trim()
-            getPlayerID(selectedPreviousSearch)
-        })
-}
+    // Give the iframe a correct link
+    videoIframe.setAttribute(
+      "src",
+      "https://www.youtube.com/embed/" + yaya.items[i].id.videoId
+    );
+    // Append iframe to the container
+    videoContainer.appendChild(videoIframe);
+  }
+};
 
-let loadUserInput = function() {
-    var searchedPlayers = JSON.parse(localStorage.getItem("player") || "[]");
-    
-    if(searchedPlayers.length === 0) {
-        return
+let playersInLocalStorage = JSON.parse(localStorage.getItem("player")) || [];
+console.log(playersInLocalStorage);
+
+let savedSearches = function (player) {
+  let previousSearchButton = document.createElement("button");
+  previousSearchButton.classList.add(
+    "saved-search",
+    "is-success",
+    "button",
+    "mr-2",
+    "mt-2"
+  );
+  previousSearchButton.textContent = player;
+
+  playersInLocalStorage.push(player);
+  localStorage.setItem("player", JSON.stringify(playersInLocalStorage));
+  appendMeContainerEl.appendChild(previousSearchButton);
+
+  $(".saved-search").on("click", function () {
+    let selectedPreviousSearch = $(this).text().trim();
+    getPlayerID(selectedPreviousSearch);
+  });
+};
+
+let loadUserInput = function () {
+  var searchedPlayers = JSON.parse(localStorage.getItem("player") || "[]");
+
+  if (searchedPlayers.length === 0) {
+    return;
+  } else {
+    const searchAlert = document.createElement("p");
+    searchAlert.classList.add("search-alert");
+    searchAlert.textContent = "Your previous searches:";
+    appendMeContainerEl.appendChild(searchAlert);
+    for (let j = 0; j < searchedPlayers.length; j++) {
+      let previousSearchButton = document.createElement("button");
+      previousSearchButton.textContent = searchedPlayers[j];
+      previousSearchButton.classList.add(
+        "saved-search",
+        "is-success",
+        "button",
+        "mr-2",
+        "mt-2"
+      );
+      appendMeContainerEl.appendChild(previousSearchButton);
     }
-    else {
-        const searchAlert = document.createElement('p')
-        searchAlert.classList.add('search-alert')
-        searchAlert.textContent = "Your previous searches:"
-        appendMeContainerEl.appendChild(searchAlert)
-        for( let j = 0; j < searchedPlayers.length; j++) {
-            let previousSearchButton = document.createElement("button")
-            previousSearchButton.textContent = searchedPlayers[j]
-            previousSearchButton.classList.add("saved-search",  "is-success", "button", "mr-2", "mt-2")    
-            appendMeContainerEl.appendChild(previousSearchButton)
-            
-            
+    $(".saved-search").on("click", function () {
+      nbaTextWrapper.classList.add("hidden");
+      let selectedPreviousSearch = $(this).text().trim();
+      getPlayerID(selectedPreviousSearch);
+    });
+  }
+};
 
-        }
-        $(".saved-search").on("click", function() {
-            let selectedPreviousSearch = $(this).text().trim()
-            getPlayerID(selectedPreviousSearch)
-        })
-    }
-   
+modalCloseEl.addEventListener("click", function () {
+  modalEl.classList.remove("is-active");
+});
 
-}
-
-
-
-
-modalCloseEl.addEventListener("click", function() {
-    modalEl.classList.remove("is-active")
-})
-
-loadUserInput()
+loadUserInput();
