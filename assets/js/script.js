@@ -1,5 +1,7 @@
 const playerSearchBtn = document.querySelector("#submit-button");
+const newSearchBtn = document.querySelector("#submit-button-two");
 const playerInputEl = document.querySelector("#player-input");
+const playerInputNewEl = document.querySelector("#player-input-new");
 const draftYearEl = document.querySelector("#draft-year");
 const jerseyEl = document.querySelector("#jersey");
 const teamEl = document.querySelector("#team");
@@ -9,7 +11,8 @@ const sectionContainerEl = document.querySelector(".section-container");
 const modalEl = document.querySelector(".modal");
 const modalContainerEl = document.querySelector(".modal-container");
 const nbaTextWrapper = document.querySelector(".nba-text-wrapper");
-let modalCloseEl = document.querySelector(".modal-close");
+const newSearchWrapper = document.querySelector(".nba-new-search-wrapper");
+let modalCloseEl = document.querySelector(".modal__close");
 let appendMeContainerEl = document.querySelector(".append-me");
 
 const options = {
@@ -21,14 +24,25 @@ const options = {
 };
 
 playerSearchBtn.addEventListener("click", function () {
-  // console.dir(playerInputEl)
-  nbaTextWrapper.classList.add("hidden");
   let playerName = playerInputEl.value;
 
   if (playerName === "" || playerName === " " || playerName === null) {
     modalEl.classList.add("is-active");
   } else {
     // anchorEl.setAttribute("href", "./stats.html" + playerName)
+    nbaTextWrapper.classList.add("hidden");
+    appendMeContainerEl.classList.add("hidden");
+    newSearchWrapper.classList.remove("hidden");
+    getPlayerID(playerName);
+    savedSearches(playerName);
+  }
+});
+newSearchBtn.addEventListener("click", function () {
+  let playerName = playerInputNewEl.value;
+
+  if (playerName === "" || playerName === " " || playerName === null) {
+    modalEl.classList.add("is-active");
+  } else {
     getPlayerID(playerName);
     savedSearches(playerName);
   }
@@ -40,8 +54,6 @@ var getPlayerID = function (player) {
       // debugger;
       if (response.ok) {
         response.json().then(function (data) {
-          console.log(data);
-
           // Remove class hidden from the container
           sectionContainerEl.classList.remove("hidden");
 
@@ -50,12 +62,7 @@ var getPlayerID = function (player) {
             playerLastName = data.data[0].last_name;
             playerNameEl.innerHTML = playerFirstName + " " + playerLastName;
 
-            console.log(playerLastName);
-            console.log(playerFirstName);
-            // playerID = data.data[0].id
-            // console.log(playerID)
             team = data.data[0].team.full_name;
-            console.log(team);
             teamEl.innerHTML = "Team: " + team;
 
             getPlayerDraftYear(playerLastName, playerFirstName);
@@ -79,22 +86,16 @@ var getPlayerDraftYear = function (player, firstname) {
         if (data.response[i].firstname == firstname) {
           playerDraftYear = data.response[i].nba.start;
           playerJerseyNumber = data.response[i].leagues.standard.jersey;
-          console.log(playerDraftYear);
-          console.log(playerJerseyNumber);
+
           jerseyEl.innerHTML = "Jersey #: " + playerJerseyNumber;
-          draftYearEl.innerHTML = "Draft Year: " + playerDraftYear;
+          draftYearEl.innerHTML =
+            "Draft Year: " +
+            `<span class="text--yellow">${playerDraftYear}</span>`;
 
           // Run YouTube function
           fetchTheApi(playerDraftYear);
         }
       }
-
-      // playerName = data.response[0].firstname + " " + data.response[0].lastname
-      // console.log(playerName)
-      // playerDraftYear = data.response[0].nba.start
-      // console.log(playerDraftYear)
-      // playerJerseyNumber = data.response[0].leagues.standard.jersey
-      // console.log(playerJerseyNumber)
     });
   });
 };
@@ -116,7 +117,6 @@ let fetchTheApi = function (userYear) {
   fetch(apiUrl).then(function (response) {
     if (response.ok) {
       response.json().then(function (data) {
-        console.log(data);
         // Run the YouTube embed function with the data as an argument
         createYouTubeContent(data);
       });
@@ -125,6 +125,7 @@ let fetchTheApi = function (userYear) {
 };
 
 let createYouTubeContent = function (yaya) {
+  console.log(("yaya", yaya));
   for (let i = 0; i < yaya.items.length; i++) {
     // Create title for the container
     youtubeVideoTitle.innerHTML = yaya.items[i].snippet.title;
@@ -142,17 +143,10 @@ let createYouTubeContent = function (yaya) {
 };
 
 let playersInLocalStorage = JSON.parse(localStorage.getItem("player")) || [];
-console.log(playersInLocalStorage);
 
 let savedSearches = function (player) {
   let previousSearchButton = document.createElement("button");
-  previousSearchButton.classList.add(
-    "saved-search",
-    "is-success",
-    "button",
-    "mr-2",
-    "mt-2"
-  );
+  previousSearchButton.classList.add("btn", "pill");
   previousSearchButton.textContent = player;
 
   playersInLocalStorage.push(player);
@@ -162,6 +156,7 @@ let savedSearches = function (player) {
   $(".saved-search").on("click", function () {
     let selectedPreviousSearch = $(this).text().trim();
     getPlayerID(selectedPreviousSearch);
+    appendMeContainerEl.classList.add("hidden");
   });
 };
 
@@ -171,26 +166,35 @@ let loadUserInput = function () {
   if (searchedPlayers.length === 0) {
     return;
   } else {
+    const previousSearchButtonWrapper = document.createElement("div");
+    previousSearchButtonWrapper.classList.add("prev-search-wrapper");
     const searchAlert = document.createElement("p");
     searchAlert.classList.add("search-alert");
-    searchAlert.textContent = "Your previous searches:";
+    searchAlert.textContent = "Previous searches:";
     appendMeContainerEl.appendChild(searchAlert);
+    appendMeContainerEl.appendChild(previousSearchButtonWrapper);
+
     for (let j = 0; j < searchedPlayers.length; j++) {
       let previousSearchButton = document.createElement("button");
       previousSearchButton.textContent = searchedPlayers[j];
-      previousSearchButton.classList.add(
-        "saved-search",
-        "is-success",
-        "button",
-        "mr-2",
-        "mt-2"
-      );
-      appendMeContainerEl.appendChild(previousSearchButton);
+      previousSearchButton.classList.add("btn", "pill", "saved-search");
+      previousSearchButtonWrapper.appendChild(previousSearchButton);
     }
     $(".saved-search").on("click", function () {
       nbaTextWrapper.classList.add("hidden");
+      appendMeContainerEl.classList.add("hidden");
+
       let selectedPreviousSearch = $(this).text().trim();
       getPlayerID(selectedPreviousSearch);
+    });
+    const clearSearchButton = document.createElement("button");
+    clearSearchButton.textContent = "Clear";
+    clearSearchButton.classList.add("btn", "btn--clear", "pill");
+
+    appendMeContainerEl.appendChild(clearSearchButton);
+    $(".btn--clear").on("click", function () {
+      localStorage.clear();
+      appendMeContainerEl.innerHTML = "";
     });
   }
 };

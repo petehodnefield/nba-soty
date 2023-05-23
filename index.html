@@ -14,59 +14,85 @@
 
     <link rel="stylesheet" href="./assets/css/style.css" />
     <link rel="icon" href="./assets/images/header.png" />
+    <script
+      src="https://kit.fontawesome.com/ec18dcb1ac.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body class="">
-    <div class="nba-text-wrapper">
-      <h1 class="nba__header">Enter an NBA player's name</h1>
-      <div class="form-wrapper">
-        <input
-          id="player-input"
-          type="text"
-          placeholder="Lebron James"
-          class="input"
-        />
-        <button id="submit-button" class="btn btn--primary pill">Submit</button>
+    <header class="header">
+      <a href="/" class="nba__headlink"
+        ><i class="fa-solid fa-basketball"></i
+      ></a>
+    </header>
+    <main>
+      <div class="nba-text-wrapper">
+        <h1 class="nba__header">Enter an NBA player's name</h1>
+        <div class="form-wrapper">
+          <input
+            id="player-input"
+            type="text"
+            placeholder="Lebron James"
+            class="input"
+          />
+          <button id="submit-button" class="btn btn--primary pill">
+            <i class="fa-solid fa-basketball"></i>
+            Submit
+          </button>
+        </div>
       </div>
-    </div>
-    <section class="section-container stats-youtube-wrapper hidden">
-      <div
-        class="has-text-centered is-flex is-justify-content-center has-background-link column"
-      >
-        <div class="has-text-light">
-          <h2 id="player-name" class="nba__name"></h2>
-          <div class="stats-container">
-            <h3 class="nba__stat" id="draft-year"></h3>
-            <h3 class="nba__stat" id="jersey"></h3>
-            <h3 class="nba__stat" id="team"></h3>
+      <section class="section-container stats-youtube-wrapper hidden">
+        <div
+          class="has-text-centered is-flex is-justify-content-center has-background-link column"
+        >
+          <div class="has-text-light">
+            <h2 id="player-name" class="nba__name"></h2>
+            <div class="stats-container">
+              <h3 class="nba__stat" id="draft-year"></h3>
+              <h3 class="nba__stat" id="jersey"></h3>
+              <h3 class="nba__stat" id="team"></h3>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="is-flex is-justify-content-center has-background-link column">
         <div
-          class="has-background-danger video-container mb-4 is-flex is-align-items-center is-justify-content-center"
+          class="is-flex is-justify-content-center has-background-link column"
         >
-          <h2 id="song" class="title is-2 mb-1"></h2>
-          <iframe
-            class="video-iframe"
-            width="544"
-            height="366"
-            frameborder="0"
-            allowfullscreen
-          ></iframe>
+          <div class="video-container">
+            <h2 id="song" class="video__title"></h2>
+            <iframe
+              class="video-iframe"
+              width="544"
+              height="366"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      </section>
+      <div class="append-me"></div>
+      <div class="nba-new-search-wrapper hidden">
+        <h2 class="nba__subheader">New search:</h2>
+        <div class="form-wrapper">
+          <input
+            id="player-input-new"
+            type="text"
+            placeholder="Lebron James"
+            class="input"
+          />
+          <button id="submit-button-two" class="btn btn--primary pill">
+            <i class="fa-solid fa-basketball"></i>
+            Submit
+          </button>
         </div>
       </div>
-    </section>
-
+    </main>
     <!-- Modal -->
     <div class="modal">
-      <div class="modal-background"></div>
       <div class="modal-content">
-        <!-- <h2 class="title alert-title">Please enter a valid name!</h2> -->
+        <div class="modal__close">X</div>
+        <h2 class="modal__text">Please enter a valid name!</h2>
       </div>
-      <button class="modal-close is-large" aria-label="close"></button>
     </div>
-    <div class="append-me"></div>
-
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
       integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
