@@ -183,7 +183,7 @@ let loadUserInput = function () {
     $(".saved-search").on("click", function () {
       nbaTextWrapper.classList.add("hidden");
       appendMeContainerEl.classList.add("hidden");
-
+      newSearchWrapper.classList.remove("hidden");
       let selectedPreviousSearch = $(this).text().trim();
       getPlayerID(selectedPreviousSearch);
     });

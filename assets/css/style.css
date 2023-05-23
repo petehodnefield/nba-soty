@@ -9,10 +9,13 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   position: relative;
+  box-sizing: border-box;
+
   min-height: 100vh;
   font-family: "Inter", sans-serif;
   background: hsla(0, 2%, 22%, 1);
@@ -127,6 +130,9 @@ main {
   background-color: red;
   color: var(--white);
 }
+.saved-search {
+  margin-bottom: 0.5rem;
+}
 
 /* Stats styling */
 .stats-youtube-wrapper {
@@ -137,6 +143,11 @@ main {
   max-width: 60rem;
   padding: 3rem 0;
   gap: 3rem;
+}
+.player-info-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 .nba__name {
   font-size: 2.5rem;
@@ -181,8 +192,6 @@ main {
   flex-direction: column;
   justify-items: center;
   justify-content: center;
-
-  gap: 12px;
 }
 .search-alert {
   font-size: 1.5rem;
@@ -228,4 +237,63 @@ main {
 /* Hidden */
 .hidden {
   display: none;
+}
+
+@media screen and (max-width: 1200px) {
+  .header {
+    max-width: unset;
+    padding-left: 8rem;
+  }
+  .stats-youtube-wrapper {
+    width: unset;
+    flex-shrink: 2;
+    padding: 1rem 2rem;
+  }
+  .video-iframe {
+    width: 400px;
+    height: 300px;
+  }
+  .video__title {
+    max-width: 400px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  main {
+    justify-content: flex-start;
+    padding-top: 2rem;
+  }
+  .nba-text-wrapper {
+    padding: 0 1.5rem;
+  }
+  .nba__header {
+    text-align: center;
+  }
+  .stats-youtube-wrapper {
+    flex-direction: column;
+  }
+  .player-info-wrapper {
+    align-items: center;
+  }
+  .player-name {
+    text-align: center;
+  }
+  .stats-container {
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .header {
+    justify-content: center;
+    padding: 0;
+  }
+  .stats-youtube-wrapper {
+    padding: 0 0 2rem 0;
+  }
+}
+@media screen and (max-width: 400px) {
+  .video-iframe {
+    width: 350px;
+  }
 }
